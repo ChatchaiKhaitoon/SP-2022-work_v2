@@ -129,20 +129,25 @@ function calculate() {
       </div>
     `;
   const response = postData(savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel);
-  response.then((res)=>{console.log(res);}).catch((err)=>{console.log(err);})
+  response.then((res)=>{
+    console.log(res);
+  }).catch((err)=>{
+    console.log(err);
+  });
 }
 
 
 // fecth to backend.
 async function postData(savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel){
-  const res = await fetch('http://localhost:3000/api/insert-financial-health', {
+  const userid = window.sessionStorage.getItem('userid');
+  const res = await fetch(`http://localhost:3000/api/insert-financial-health`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
     },
-    body: JSON.stringify({id: 'u001',savingRatio: savingRatio, debtRatio: debtRatio, emergencyFundRatio: emergencyFundRatio, netWorth: netWorth, moneyLevel: moneyLevel})
+    body: JSON.stringify({userid: userid,savingRatio: Number(savingRatio), debtRatio: Number(debtRatio), emergencyFundRatio: Number(emergencyFundRatio)?? 0, netWorth: Number(netWorth), moneyLevel: moneyLevel})
   })
-  return res.json()
+  return res.json();
   
 
 }
