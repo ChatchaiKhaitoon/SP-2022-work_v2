@@ -134,7 +134,7 @@ let temp = [
 // send params as an id.
 app.get("/api/get-financial-health/:id", (req, res) => {
   const id = req.params.id;
-  const data = temp.filter((t)=> t.id === id);
+  const data = temp.filter((t) => t.id === id);
   console.log(data);
   res.status(200).json(temp[0]);
 });
@@ -142,15 +142,15 @@ app.get("/api/get-financial-health/:id", (req, res) => {
 // update user financial health(temp) by id
 app.post("/api/insert-financial-health", (req, res) => {
   const payload = req.body;
-  temp = temp.map((t)=>{
-    if(t.id == payload.id){
+  temp = temp.map((t) => {
+    if (t.id == payload.id) {
       return {
-      id: t.id,
-      savingRatio : payload.savingRatio,
-      debtRatio : payload.debtRatio,
-      emergencyFundRatio : payload.emergencyFundRatio,
-      moneyLevel : payload.moneyLevel,
-      jars: t.jars,
+        id: t.id,
+        savingRatio: payload.savingRatio,
+        debtRatio: payload.debtRatio,
+        emergencyFundRatio: payload.emergencyFundRatio,
+        moneyLevel: payload.moneyLevel,
+        jars: t.jars,
       }
     }
     return t;
@@ -158,18 +158,18 @@ app.post("/api/insert-financial-health", (req, res) => {
   res.send('inserted');
 });
 
-app.put('/api/update-jars/:id',(req,res)=>{
+app.put('/api/update-jars/:id', (req, res) => {
   const id = req.params.id;
   const amount = req.body.amount;
-  temp = temp.map((t)=>{
-    if(t.id == id){
+  temp = temp.map((t) => {
+    if (t.id == id) {
       return {
-      id: t.id,
-      savingRatio : t.savingRatio,
-      debtRatio : t.debtRatio,
-      emergencyFundRatio : t.emergencyFundRatio,
-      moneyLevel : t.moneyLevel,
-      jars: amount,
+        id: t.id,
+        savingRatio: t.savingRatio,
+        debtRatio: t.debtRatio,
+        emergencyFundRatio: t.emergencyFundRatio,
+        moneyLevel: t.moneyLevel,
+        jars: amount,
       }
     }
     return t;
@@ -183,7 +183,7 @@ app.put('/api/update-jars/:id',(req,res)=>{
 app.get("/dashboard", (req, res) => {
   // const result = req.query.result; // Get the result from the query parameter
   // res.render("dashboard", { result: result }); // Render the dashboard template with the result variable
-  
+
   const filePath = path.join(
     __dirname,
     "../Frontend/Dashboard/index.html"
@@ -199,5 +199,5 @@ app.get("/", (req, res) => {
 // Start the server and listen on a specific port, e.g., 3000
 const port = 3000;
 app.listen(port, () => {
-  console.log("Server is running on port " + port);
+  console.log(`Server is running on http://localhost:${port}/`);
 });
