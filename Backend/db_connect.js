@@ -3,14 +3,13 @@ import mysql from "mysql";
 
 const db = mysql.createConnection({
     host:"localhost",
-    user:"bfc_user",
-    password:"localhost",
-    databbase:"BasicFinancialHealthcheack"
+    user:"",
+    password:"",
 });
 
-db.query("USE BasicFinancialHealthcheack",(err,result)=>{
+db.query("USE BasicFinancialHealthcheck",(err,result)=>{
     if(err) throw err;
-    console.log("Database Connected using BasicFinancialHealthcheack Database");
+    console.log("Database Connected using BasicFinancialHealthcheck Database");
 });
 
 export default db;
