@@ -1,0 +1,151 @@
+/* ===== Google Font Import - Poppins ===== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans Thai', 
+    sans-serif;
+}
+header{
+    text-align: center;
+    padding: 20px;
+}
+h1{
+    color: #1b1d54;
+    font-family: Noto Sans Thai;
+    text-align: center
+}
+body{
+    min-height: 100vh;
+    /* display: flex; */
+    align-items: center;
+    justify-content: center;
+    background: #E3F2FD;
+}
+
+
+
+.accordion{
+    max-width: 530px;
+    width: 100%;
+    background: #FFF;
+    margin: auto;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow:  0 0 4px rgba(0,0,0,0.2);
+}
+.accordion .accordion-content{
+    margin: 10px 0;
+    border-radius: 4px;
+    background: #FFF7F0;
+    border: 1px solid #FFD6B3;
+    overflow: hidden;
+}
+.accordion-content:nth-child(2){
+    background-color: #F0FAFF;
+    border-color: #CCEEFF;
+}
+.accordion-content:nth-child(3){
+    background-color: #FFF0F3;
+    border-color: #FFCCD6;
+}
+.accordion-content:nth-child(4){
+    background-color: #F0F0FF;
+    border-color: #CCCCFF;
+}
+.accordion-content.open{
+    padding-bottom: 10px;
+}
+.accordion-content header{
+    display: flex;
+    min-height: 50px;
+    padding: 0 15px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s linear;
+}
+.accordion-content.open header{
+    min-height: 35px;
+}
+.accordion-content header .title{
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+.accordion-content header i{
+    font-size: 15px;
+    color: #333;
+}
+.accordion-content .description{
+    height: 0;
+    font-size: 12px;
+    color: #333;
+    font-weight: 400;
+    padding: 0 15px;
+    transition: all 0.2s linear;
+}
+
+ /* The good stuff */
+ .tooltip-toggle {
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .tooltip-toggle svg {
+    height: 20px;
+    width: 15px;
+  }
+  
+  
+  /* Tooltip text container */
+  .tooltip-toggle::before {
+    position: absolute;
+    top: -80px;
+    left: -80px;
+    background-color: #2B222A;
+    border-radius: 5px;
+    color: #fff;
+    content: attr(aria-label); /* This pulls in the text from the element with the tooltip */
+    padding: 1rem;
+    text-transform: none;
+    transition: all 0.5s ease;
+    width: 160px;
+  }
+  
+  /* Tooltip arrow */
+  .tooltip-toggle::after {
+    position: absolute;
+    top: -12px;
+    left: 9px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #2B222A;
+    content: " ";
+    font-size: 0;
+    line-height: 0;
+    margin-left: -5px;
+    width: 0;
+  }
+  
+  /* Setting up the transition */
+  .tooltip-toggle::before,
+  .tooltip-toggle::after {
+    color: #efefef;
+    font-family: monospace;
+    font-size: 16px;
+    opacity: 0;
+    pointer-events: none;
+    text-align: center;
+  }
+  
+  /* Triggering the transition */
+  .tooltip-toggle:focus::before,
+  .tooltip-toggle:focus::after,
+  .tooltip-toggle:hover::before,
+  .tooltip-toggle:hover::after {
+    opacity: 1;
+    transition: all 0.75s ease;
+  }

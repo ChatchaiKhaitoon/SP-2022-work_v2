@@ -1,0 +1,36 @@
+.container {
+    background-color: #f7f7f7;
+  }
+  
+  .card {
+    width: 400px;
+  }
+  
+  .card-header {
+    background-color: #2b4b80;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .card-footer {
+    display: none;
+    background-color: #fff;
+    text-align: center;
+  }
+
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+  }
+  
+  .calculate-btn:hover {
+    background-color: #2b4b80;
+    border-color: #2b4b80;
+  }
+  
+  @media (max-width: 576px) {
+    .card {
+      width: 100%;
+      border-radius: 0;
+    }
+  }
+  

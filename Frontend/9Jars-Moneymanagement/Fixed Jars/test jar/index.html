@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>9 Jars(Fixed Jars)</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/dashboard/fixed-jars-style.css" />
+  </head>
+  <body>
+    <!-- <div class="progress-container">
+      <div class="progress-ring">
+        <div class="progress-bar"></div>
+        <div class="progress-value"></div>
+      </div>
+    </div> -->
+
+    <div class="input-container">
+      <label for="monthly-income">รายได้ต่อเดือนของคุณ:</label>
+      <input
+        type="number"
+        id="monthly-income"
+        min="0"
+        step="0.01"
+        placeholder="0.00"
+      />
+      <button id="save">Save</button>
+    </div>
+    <div class="results" style="display: none">
+      <h2>Results:</h2>
+      <ul id="results-list"></ul>
+    </div>
+
+    <div class="container">
+      <h1>เก็บเงินด้วย 9 Jars(Fixed Jars)</h1>
+      <div class="jars">
+        <!-- Necessity Jar -->
+        <div class="jar" data-percentage="40">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินใช้จ่ายประจำ</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">40%</span>
+        </div>
+        <!-- Education Jar -->
+        <div class="jar" data-percentage="5">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินเพื่อการศึกษา</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">5%</span>
+        </div>
+        <!-- Play Jar -->
+        <div class="jar" data-percentage="5">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินให้รางวัลตัวเอง</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">5%</span>
+        </div>
+        <!-- Giving Jar -->
+        <div class="jar" data-percentage="5">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินเพื่อแบ่งปัน</h3>
+         
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">5%</span>
+        </div>
+        <!-- Emergency Jar -->
+        <div class="jar" data-percentage="10">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินสำรองฉุกเฉิน</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">10%</span>
+        </div>
+        <!-- Retirement Jar -->
+        <div class="jar" data-percentage="10">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินเกษียณอายุ</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">10%</span>
+        </div>
+        <!-- Insurance Jar -->
+        <div class="jar" data-percentage="5">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินซื้อประกัน</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">5%</span>
+        </div>
+        <!-- Freedom Jar -->
+        <div class="jar" data-percentage="5">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินลงทุน ต่อยอด</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">5%</span>
+        </div>
+        <!-- Debt Jar -->
+        <div class="jar" data-percentage="15">
+          <div class="jar-icon">🏺</div>
+          <h3>เงินใช้หนี้</h3>
+          
+          <button class="increase">+</button>
+          <button class="decrease">-</button>
+          <span class="percentage-display">15%</span>
+        </div>
+      </div>
+    </div>
+    <script src="/js/fixed-jars-script.js"></script>
+  </body>
+</html>

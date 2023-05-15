@@ -1,0 +1,194 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #ffd666, #faad14);
+
+  }
+
+
+  
+  h1 {
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    margin-bottom: 5px;
+  }
+  
+  input[type="number"] {
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    width: 200px;
+    font-size: 16px;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* ฺBackground */
+  .container {
+    background-image: url("background-image.jpg");
+    background-size: cover;
+    position: relative;
+  }
+  
+  .container::before {
+    content: "";
+    background-image: url("background-image.jpg");
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(5px);
+    z-index: -1;
+  }
+  
+  button:hover {
+    background-color: #3e8e41;
+  }
+  
+  #result {
+    margin-top: 50px;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  /* history */
+  .history {
+    margin-top: 50px;
+  }
+  
+  .history h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .history table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .history th,
+  .history td {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  .history th {
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+  }
+  
+  .history tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  
+
+  /* The good stuff */
+.tooltip-toggle {
+  cursor: pointer;
+  position: relative;
+}
+
+.tooltip-toggle svg {
+  height: 20px;
+  width: 18px;
+}
+
+
+/* Tooltip text container */
+.tooltip-toggle::before {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  background-color: #2B222A;
+  border-radius: 5px;
+  color: #fff;
+  content: attr(aria-label); /* This pulls in the text from the element with the tooltip */
+  padding: 1rem;
+  text-transform: none;
+  transition: all 0.5s ease;
+  width: 160px;
+}
+
+/* Tooltip arrow */
+.tooltip-toggle::after {
+  position: absolute;
+  top: -12px;
+  left: 9px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #2B222A;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+  margin-left: -5px;
+  width: 0;
+}
+
+/* Setting up the transition */
+.tooltip-toggle::before,
+.tooltip-toggle::after {
+  color: #efefef;
+  font-family: monospace;
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+  text-align: center;
+}
+
+/* Triggering the transition */
+.tooltip-toggle:focus::before,
+.tooltip-toggle:focus::after,
+.tooltip-toggle:hover::before,
+.tooltip-toggle:hover::after {
+  opacity: 1;
+  transition: all 0.75s ease;
+}
+  
+
+/* image */
+img {
+  filter: blur(5px);
+}
+
+img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+  

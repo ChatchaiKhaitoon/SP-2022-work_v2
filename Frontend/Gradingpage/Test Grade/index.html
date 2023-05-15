@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Money Index Calculator</title>
+    <link rel="stylesheet" href="/dashboard/grading-style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div>
+      <h1>เครื่องคำนวณสุขภาพการเงินด้วย (Money Index)</h1>
+      <form>
+        <div class="form-group">
+          <label for="monthly-income">รายได้ต่อเดือน:</label>
+          <input type="number" id="monthly-income" required />
+        </div>
+        <div class="form-group">
+          <label for="monthly-expenses">รายจ่ายต่อเดือน:</label>
+          <input type="number" id="monthly-expenses" required />
+        </div>
+        <div class="form-group">
+          <label for="savings">เงินออมของคุณ:</label>
+          <input type="number" id="savings" required />
+        </div>
+        <div class="form-group">
+          <label for="fixed-cost">ค่่าใช้จ่ายคงที่:</label>
+          <input type="number" id="fixed-cost" required />
+        </div>
+        <div class="form-group">
+          <label for="assets">ทรัพย์สิน:</label>
+          <input type="number" id="assets" required />
+        </div>
+        <div class="form-group">
+          <label for="liabilities">หนี้สิน:</label>
+          <input type="number" id="liabilities" required />
+        </div>
+        <button type="button" onclick="calculate()">คำนวณ</button>
+      </form>
+
+      <div id="result"></div>
+      <script src="script.js"></script>
+
+      <!-- History -->
+      <!-- <div class="history">
+    <h2>Money Index History</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Previous Level</th>
+          <th>Current Level</th>
+        </tr>  
+      </thead>
+      <tbody id="history-table"> -->
+      <!-- Dynamically populated with JavaScript -->
+      <!-- </tbody>
+    </table>
+  </div> -->
+    </div>
+  </body>
+</html>
