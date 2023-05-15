@@ -154,10 +154,12 @@ app.get("/api/get-financial-health/:id", (req, res) => {
       res.json(payload); 
     }
   });
+
 });
 
 // update user financial health(temp) by id
 app.post("/api/insert-financial-health", (req, res) => {
+
   console.log(req.body);
   const {userid, savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel} = req.body;
   const level = moneyLevel.split('.')[1];
@@ -186,7 +188,7 @@ app.get('/api/get-jars/:id',(req,res)=>{
   });
 });
 
-app.put('/api/update-jars/:id',(req,res)=>{
+app.put('/api/update-jars/:id', (req, res) => {
   const id = req.params.id;
   const jar = req.body.jar;
   console.log(jar);
@@ -197,10 +199,10 @@ app.put('/api/update-jars/:id',(req,res)=>{
       res.json({status:'success'});
     }else{
       res.json({status:'failed'});
+
     }
   });
 })
-
 
 // ---------------------------------------------//
 app.get("/", (req, res) => {
@@ -210,5 +212,5 @@ app.get("/", (req, res) => {
 // Start the server and listen on a specific port, e.g., 3000
 const port = 3000;
 app.listen(port, () => {
-  console.log("Server is running on port " + port);
+  console.log(`Server is running on http://localhost:${port}/`);
 });
