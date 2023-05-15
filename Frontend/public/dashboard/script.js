@@ -6,7 +6,6 @@
 //     const fixedCost = parseFloat(document.getElementById("fixed-cost").value);
 //     const assets = parseFloat(document.getElementById("assets").value);
 //     const liabilities = parseFloat(document.getElementById("liabilities").value);
-
 //     // Calculate Money Index indicators
 //     // Saving Ratio = (Saving/income) * 100
 //     const savingRatio = ((savings / monthlyIncome) * 100).toFixed(2);
@@ -129,6 +128,23 @@ function calculate() {
         <h3>สุขภาพการเงินของคุณอยู่ที่ ${moneyLevel}</h3>
       </div>
     `;
+  const response = postData(savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel);
+  response.then((res)=>{console.log(res);}).catch((err)=>{console.log(err);})
+}
+
+
+// fecth to backend.
+async function postData(savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel){
+  const res = await fetch('http://localhost:3000/api/insert-financial-health', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({id: 'u001',savingRatio: savingRatio, debtRatio: debtRatio, emergencyFundRatio: emergencyFundRatio, netWorth: netWorth, moneyLevel: moneyLevel})
+  })
+  return res.json()
+  
+
 }
 
 //   // Retrieve previous grading data from local storage (if available)
