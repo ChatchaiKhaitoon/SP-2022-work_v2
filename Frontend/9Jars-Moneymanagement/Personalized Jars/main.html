@@ -64,7 +64,7 @@
         <button onclick="transferMoney('retirement')">ย้าย</button>
       </div>
       <div class="jar">
-        <h3>Insurance</h3>
+        <h3>เงินประกัน</h3>
         <input type="number" id="insurance" value="0" />
         <button onclick="addMoney('insurance')">เพิ่ม</button>
         <button onclick="reduceMoney('insurance')">ลด</button>
@@ -87,7 +87,53 @@
       </div>
     </div>
     <script src="/js/personalized-jars-script.js"></script>
+    <script>
+      let necessityInput = document.getElementById("necessity");
+      let educationInput = document.getElementById("education");
+      let playInput = document.getElementById("play");
+      let givingInput = document.getElementById("giving");
+      let emergencyInput = document.getElementById("emergency");
+      let retirementInput = document.getElementById("retirement");
+      let insuranceInput = document.getElementById("insurance");
+      let freedomInput = document.getElementById("freedom");
+      let debtInput = document.getElementById("debt");
+      
+      
+      async function getJars(){
+        const userid = window.sessionStorage.getItem('userid');
+        const res = await fetch(`http://localhost:3000/api/get-jars/${userid}`)
+        return res.json();
+      }
+      const data = getJars();
+      data.then((res)=>{
+        necessityInput.value = res.Jar_Ness;
+        educationInput.value = res.Jar_Edu;
+        playInput.value = res.Jar_Play;
+        givingInput.value = res.Jar_Give;
+        emergencyInput.value = res.Jar_Emergency;
+        retirementInput.value = res.Jar_Retirement;
+        insuranceInput.value = res.Jar_Insurance;
+        freedomInput.value = res.Jar_MoneyFreedom;
+        debtInput.value = res.Jar_Debt;
+        
+        jars.necessity = res.Jar_Ness
+        jars.education = res.Jar_Edu
+        jars.play = res.Jar_Play
+        jars.giving = res.Jar_Give
+        jars.emergency = res.Jar_Emergency
+        jars.retirement = res.Jar_Retirement
+        jars.insurance = res.Jar_Insurance
+        jars.freedom = res.Jar_MoneyFreedom
+        jars.debt = res.Jar_Debt
+        
+      }).catch((err)=>{
+        console.log(err);
+      });
+      
+      
+      
     
+    </script>
      
     </body>
 </html>

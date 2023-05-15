@@ -1,5 +1,7 @@
+
+
 // Object to store jar amounts
-const jars = {
+let jars = {
     necessity: 0,
     education: 0,
     play: 0,
@@ -10,23 +12,24 @@ const jars = {
     freedom: 0,
     debt: 0,
   };
-  async function putJars(amount){
-    const res = await fetch('http://localhost:3000/api/update-jars/u001', {
+  async function updateJars(j){
+    const userid = window.sessionStorage.getItem('userid');
+    const res = await fetch(`http://localhost:3000/api/update-jars/${userid}`, {
       method: 'PUT',
       headers: {
       'Content-type': 'application/json',
       },
-      body: JSON.stringify({amount: amount})
+      body: JSON.stringify({jar: j})
     })
     return res.json();
   }
   // Function to add money to a jar
   function addMoney(jar) {
-    const amount = Number(prompt(`Enter amount to add to ${jar} jar:`));
+    let amount = Number(prompt(`Enter amount to add to ${jar} jar:`));
     jars[jar] += amount;
     updateJar(jar);
     
-    const res = putJars(Number(amount));
+    const res = updateJars(jars);
     res.then(res => {
       console.log(res);
     }).catch(err =>{
@@ -43,7 +46,7 @@ const jars = {
     }
     jars[jar] -= amount;
     updateJar(jar);
-    const res = putJars(Number(-amount));
+    const res = updateJars(jars);
     res.then(res => {
       console.log(res);
     }).catch(err =>{

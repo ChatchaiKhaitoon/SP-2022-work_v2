@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import db from './db_connect.js';
+import url from "url";  
 // Import required modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,6 +14,8 @@ app.use(express.urlencoded({ extended: "false" }));
 app.use(express.json());
 
 app.use(express.static("../Frontend/public", { type: "text/css" }));
+
+
 // Listen for requests at the root path and send the index.html file as a response
 app.get("/dashboard/grading", (req, res) => {
   const filePath = path.join(
@@ -25,20 +29,34 @@ app.get("/dashboard", (req, res) => {
   const filePath = path.join(__dirname, "../Frontend/Dashboard/index.html");
   res.sendFile(filePath);
 });
+
+app.get('/signup', (req, res) => {
+  const filePath = path.join(__dirname, "../Frontend/Signup/index.html");
+  res.sendFile(filePath);
+});
+
 app.get("/login", (req, res) => {
   const filePath = path.join(__dirname, "../Frontend/Signin/index.html");
   res.sendFile(filePath);
 });
 
 app.post("/auth/login", (req, res) => {
-  const filePath = path.join(__dirname, "../Frontend/Dashboard/index.html");
-  console.log(req.body);
   //todo check login
   const { email, password } = req.body;
-  if (email === "email" && password === "password") res.redirect("/dashboard");
-  else {
-    res.status(401).json({ error: "email or password is incorrect." });
-  }
+  db.query('SELECT * FROM Registration WHERE User_Email = ? AND User_Password = ?', [email, password], (err, result) => {
+    if(err) throw err;
+    if(result.length > 0){
+      res.redirect(url.format({
+        pathname:"/dashboard",
+        query: {
+          'userid': result[0].id
+        }
+      }));
+    }else{
+      res.status(401).json({ error: "email or password is incorrect." });
+    }
+  });
+
 });
 
 // หน้า Sub page จากหน้าashboard
@@ -109,87 +127,82 @@ app.get("/dashboard/test-grading", (req, res) => {
 //   res.redirect("/dashboard?result=" + result);
 // });
 
-//TODO: just temporary used. won't work in real world.
-let temp = [
-  {
-    id: 'u001',
-    savingRatio: 0,
-    debtRatio: 0,
-    emergencyFundRatio: 0,
-    netWorth: 0,
-    moneyLevel: 0,
-    jars: 0
-  },
-  {
-    id: 'u002',
-    savingRatio: 0,
-    debtRatio: 0,
-    emergencyFundRatio: 0,
-    netWorth: 0,
-    moneyLevel: 0,
-    jars: 0
-  },
-];
+app.get('/api/get-grade-info/:id', (req, res) => {
+  const id = req.params.id;
+  db.query('SELECT * FROM BasicFinancialHealthcheck.GradeLevel where UserID=?', [id], (err, result) => {
+    if(err) throw err;
+    if(result.length>0){
+      res.json(result[0]);
+    }
+    else{
+      res.json({message: "No data found."});
+    }
+  })
+});
+
 // Get user financial health(temp) by id
 // send params as an id.
 app.get("/api/get-financial-health/:id", (req, res) => {
   const id = req.params.id;
-  const data = temp.filter((t) => t.id === id);
-  console.log(data);
-  res.status(200).json(temp[0]);
+  db.query("SELECT g.Grade_level, n.Jar_Ness+n.Jar_Edu+n.Jar_Play+n.Jar_Give+n.Jar_Insurance+n.Jar_Retirement+n.Jar_Emergency+n.Jar_MoneyFreedom+n.Jar_Debt as Total FROM GradeLevel as g INNER JOIN NineJars as n on g.UserID=n.JarID WHERE g.UserID=?", [id], (err, result) => {
+    if(err) throw err;
+    if(result.length>0){
+      const payload ={
+        moneyLevel : result[0].Grade_level,
+        jars : result[0].Total,
+      }
+      res.json(payload); 
+    }
+  });
+
 });
 
 // update user financial health(temp) by id
 app.post("/api/insert-financial-health", (req, res) => {
-  const payload = req.body;
-  temp = temp.map((t) => {
-    if (t.id == payload.id) {
-      return {
-        id: t.id,
-        savingRatio: payload.savingRatio,
-        debtRatio: payload.debtRatio,
-        emergencyFundRatio: payload.emergencyFundRatio,
-        moneyLevel: payload.moneyLevel,
-        jars: t.jars,
-      }
+
+  console.log(req.body);
+  const {userid, savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel} = req.body;
+  const level = moneyLevel.split('.')[1];
+  db.query('INSERT INTO GradeLevel (UserID, GradeID,Grade_level,Grade_SavingRatio,Grade_DebtRatio,Grade_EmergencyRatio,Grade_Networth,Grade_level_name,Grade_description,Grade_Record) VALUES(?,?,?,?,?,?,?,?,?, NOW() ) ON DUPLICATE KEY UPDATE    Grade_level = ?,Grade_SavingRatio = ?,Grade_DebtRatio = ?,Grade_EmergencyRatio = ?,Grade_Networth = ?,Grade_level_name = ?,Grade_description = ?,Grade_Record = NOW();',[userid,userid, level,savingRatio, debtRatio, emergencyFundRatio, netWorth, '','',level, savingRatio, debtRatio, emergencyFundRatio, netWorth, '', ''],
+  (err,result)=>{
+    if(err) throw err
+
+    if(result.affectedRows > 0){
+      res.json({status:'success'});
+    }else{
+      res.json({status:'failed'});  
     }
-    return t;
   })
-  res.send('inserted');
+});
+
+app.get('/api/get-jars/:id',(req,res)=>{
+  const userid = req.params.id;
+  db.query('SELECT * FROM NineJars WHERE JarID=?',[userid],(err,result)=>{
+    if(err) throw err;
+    if(result.length>0){
+      res.json(result[0]);
+    }
+    else{
+      res.json({status:'failed'});
+    }
+  });
 });
 
 app.put('/api/update-jars/:id', (req, res) => {
   const id = req.params.id;
-  const amount = req.body.amount;
-  temp = temp.map((t) => {
-    if (t.id == id) {
-      return {
-        id: t.id,
-        savingRatio: t.savingRatio,
-        debtRatio: t.debtRatio,
-        emergencyFundRatio: t.emergencyFundRatio,
-        moneyLevel: t.moneyLevel,
-        jars: amount,
-      }
+  const jar = req.body.jar;
+  console.log(jar);
+  db.query('UPDATE NineJars SET Jar_Ness=?,Jar_Edu=?,Jar_Play=?,Jar_Give=?,Jar_Insurance=?,Jar_Retirement=?,Jar_Emergency=?,Jar_MoneyFreedom=?,Jar_Debt=? WHERE JarID=?',[jar.necessity,jar.education,jar.play,jar.giving,jar.insurance,jar.retirement,jar.emergency,jar.freedom,jar.debt,id],(err,result)=>{
+    if(err) throw err;
+
+    if(result.affectedRows>0){
+      res.json({status:'success'});
+    }else{
+      res.json({status:'failed'});
+
     }
-    return t;
-  })
-  console.log(temp);
-  res.send('inserted');
+  });
 })
-
-
-// Route for the Dashboard page
-app.get("/dashboard", (req, res) => {
-  // const result = req.query.result; // Get the result from the query parameter
-  // res.render("dashboard", { result: result }); // Render the dashboard template with the result variable
-
-  const filePath = path.join(
-    __dirname,
-    "../Frontend/Dashboard/index.html"
-  );
-  res.sendFile(filePath);
-});
 
 // ---------------------------------------------//
 app.get("/", (req, res) => {
