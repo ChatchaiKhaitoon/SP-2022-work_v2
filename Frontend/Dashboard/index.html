@@ -21,10 +21,7 @@
   <body>
     <!-- SIDEBAR -->
     <section id="sidebar">
-      <a
-        href="/"
-        class="brand"
-      >
+      <a href="/" class="brand">
         <i class="bx bxs-smile"></i>
 
         <span class="text">Financial Health Check</span>
@@ -49,9 +46,7 @@
           </a>
         </li>
         <li>
-          <a
-            href="/dashboard/test-grading"
-          >
+          <a href="/dashboard/test-grading">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -68,9 +63,7 @@
           </a>
         </li>
         <li>
-          <a
-            href="/dashboard/Suggestions"
-          >
+          <a href="/dashboard/Suggestions">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -91,9 +84,7 @@
         </li>
         <!-- Personal Jars -->
         <li>
-          <a
-            href="/dashboard/Personalized-jars"
-          >
+          <a href="/dashboard/Personalized-jars">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -111,9 +102,7 @@
         </li>
         <!-- Fixed Jars -->
         <li>
-          <a
-            href="/dashboard/Fixed-jars"
-          >
+          <a href="/dashboard/Fixed-jars">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -131,9 +120,7 @@
         </li>
         <!-- End -->
         <li>
-          <a
-            href="/dashboard/Calculation"
-          >
+          <a href="/dashboard/Calculation">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -150,9 +137,7 @@
           </a>
         </li>
         <li>
-          <a
-            href="/dashboard/UserProfile"
-          >
+          <a href="/dashboard/UserProfile">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -215,20 +200,20 @@
           <li>
             <i class="bx bxs-group"></i>
             <div class="text" id="grading-result">
-              <h3>เลเวล 1</h3>
-              <script>
+              <h3 id="money-level">เลเวล 1</h3>
+              <!-- <script>
                 if (result) {
                   document.write('<p>สุขภาพการเงินของคุณ ' + result + '.</p>');
                 }
-              </script>
-              <p id="result"></p>
+              </script> -->
+
+              <p id="result">สุขภาการเงิน</p>
             </div>
-            
           </li>
           <li>
             <i class="bx bxs-dollar-circle"></i>
             <span class="text">
-              <h3>฿2543</h3>
+              <h3 id="jars-value">฿2543</h3>
               <p>เงินเก็บใน 9 Jars</p>
             </span>
           </li>
@@ -354,7 +339,40 @@
     </section>
     <!-- CONTENT -->
 
-    <script src="script.js"></script>
+    <script>
+      async function getData() {
+        const res = await fetch(
+          "http://localhost:3000/api/get-financial-health/u001"
+        );
+        return res.json();
+      }
+      function updateMoneyLevel() {
+        const response = getData();
+        response
+          .then((res) => {
+            console.log(res);
+            const {
+              savingRatio,
+              debtRatio,
+              emergencyFundRatio,
+              netWorth,
+              moneyLevel,
+              jars,
+            } = res;
+            const moneyLevelHeader = document.getElementById("money-level");
+            const jasrValueHeader = document.getElementById("jars-value");
+            
+            moneyLevelHeader.innerHTML = "เลเวล " + moneyLevel;
+            jasrValueHeader.innerHTML = "฿"+jars;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      };
+      window.addEventListener("pageshow", function (event) {
+        updateMoneyLevel();
+      });
+    </script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </body>
 </html>

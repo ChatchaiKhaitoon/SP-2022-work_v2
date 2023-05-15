@@ -10,12 +10,28 @@ const jars = {
     freedom: 0,
     debt: 0,
   };
-  
+  async function putJars(amount){
+    const res = await fetch('http://localhost:3000/api/update-jars/u001', {
+      method: 'PUT',
+      headers: {
+      'Content-type': 'application/json',
+      },
+      body: JSON.stringify({amount: amount})
+    })
+    return res.json();
+  }
   // Function to add money to a jar
   function addMoney(jar) {
     const amount = Number(prompt(`Enter amount to add to ${jar} jar:`));
     jars[jar] += amount;
     updateJar(jar);
+    
+    const res = putJars(Number(amount));
+    res.then(res => {
+      console.log(res);
+    }).catch(err =>{
+      console.log(err);
+    })
   }
   
   // Function to reduce money from a jar
@@ -27,6 +43,12 @@ const jars = {
     }
     jars[jar] -= amount;
     updateJar(jar);
+    const res = putJars(Number(-amount));
+    res.then(res => {
+      console.log(res);
+    }).catch(err =>{
+      console.log(err);
+    })
   }
   
   // Function to transfer money from one jar to another
