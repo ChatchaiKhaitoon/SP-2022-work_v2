@@ -40,8 +40,9 @@ app.get("/login", (req, res) => {
   res.sendFile(filePath);
 });
 
+
 app.post("/auth/login", (req, res) => {
-  //todo check login
+  //todo check login เอาข้อมูลจากRegistration
   const { email, password } = req.body;
   db.query('SELECT * FROM Registration WHERE User_Email = ? AND User_Password = ?', [email, password], (err, result) => {
     if(err) throw err;
@@ -57,14 +58,16 @@ app.post("/auth/login", (req, res) => {
     }
   });
 
+//
+
 });
 
 // หน้า Sub page จากหน้าashboard
 // Routes for the sub-pages of the dashboard
 
-// app.get('/dashboard/Grading', (req, res) => {
-//   res.sendFile(__dirname + '/financial-health.html');
-// });
+app.get('/dashboard/Grading', (req, res) => {
+  res.sendFile(__dirname + '/financial-health.html');
+});
 
 app.get("/dashboard/Suggestions", (req, res) => {
   //Frontend/Suggestions/Test Suggestion/main.html
@@ -112,6 +115,8 @@ app.get("/dashboard/test-grading", (req, res) => {
   );
   res.sendFile(filePath);
 });
+
+
 // ---------------------------------------------//
 //Display lasted Grading lelvel
 // Route for handling the POST request from the Grading page
