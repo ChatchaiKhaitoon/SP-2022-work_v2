@@ -2,8 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import db from './db_connect.js';
-import url from "url";  
+import db from "./db_connect.js";
+import url from "url";
 // Import required modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,7 +14,6 @@ app.use(express.urlencoded({ extended: "false" }));
 app.use(express.json());
 
 app.use(express.static("../Frontend/public", { type: "text/css" }));
-
 
 // Listen for requests at the root path and send the index.html file as a response
 app.get("/dashboard/grading", (req, res) => {
@@ -30,7 +29,7 @@ app.get("/dashboard", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.get('/signup', (req, res) => {
+app.get("/register", (req, res) => {
   const filePath = path.join(__dirname, "../Frontend/Signup/index.html");
   res.sendFile(filePath);
 });
@@ -40,33 +39,123 @@ app.get("/login", (req, res) => {
   res.sendFile(filePath);
 });
 
-
 app.post("/auth/login", (req, res) => {
   //todo check login เอาข้อมูลจากRegistration
   const { email, password } = req.body;
-  db.query('SELECT * FROM Registration WHERE User_Email = ? AND User_Password = ?', [email, password], (err, result) => {
-    if(err) throw err;
-    if(result.length > 0){
-      res.redirect(url.format({
-        pathname:"/dashboard",
-        query: {
-          'userid': result[0].id
-        }
-      }));
-    }else{
-      res.status(401).json({ error: "email or password is incorrect." });
+  db.query(
+    "SELECT * FROM Registration WHERE User_Email = ? AND User_Password = ?",
+    [email, password],
+    (err, result) => {
+      if (err) throw err;
+      if (result.length > 0) {
+        res.redirect(
+          url.format({
+            pathname: "/profile",
+            query: {
+              userid: result[0].id,
+            },
+          })
+        );
+      } else {
+        res.status(401).json({ error: "email or password is incorrect." });
+      }
     }
-  });
+  );
 
-//
+  //
+});
 
+app.post("/auth/register", async (req, res) => {
+  if (req.body == undefined)
+    return res.status(401).json({ message: "expect payload to not be empty." });
+  const { username, email, password } = req.body;
+  // const {
+  //   id,
+  //   name,
+  //   age,
+  //   income,
+  //   expense,
+  //   fixCost,
+  //   variableCost,
+  //   asset,
+  //   liabilities,
+  //   externalDebt,
+  //   internalDebt,
+  //   insurance,
+  //   saving,
+  // } = req.body.userInfo;
+  // db.query(
+  //   `insert into Userinfo
+  // value(?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+  //   [
+  //     id,
+  //     name,
+  //     age,
+  //     income,
+  //     expense,
+  //     fixCost,
+  //     variableCost,
+  //     asset,
+  //     liabilities,
+  //     externalDebt,
+  //     internalDebt,
+  //     insurance,
+  //     saving,
+  //   ]
+  // ),
+  //   (err, result) => {
+  //     if (err) throw err;
+  //     res.location("/profile/", id);
+  //   };
+
+  db.query(
+    `insert into registration(User_Email, User_password)
+  value(?,?)`,
+    [email, password],
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      }
+      db.query(
+        "SELECT id FROM BasicFinancialHealthcheack.Registration",
+        (err, result) => {
+          if (err) {
+            res.status(500).json({ error: err });
+          }
+          const id = result[result.length - 1].id;
+          res.redirect(
+            url.format({
+              pathname: "/profile",
+              query: { userid: id },
+            })
+          );
+        }
+      );
+    }
+  );
+  // db.query(
+  //   `insert into GradeLevel
+  // value(?,0,0,0,0,0,0,'','',NOW(),?);`,
+  //   [id, id],
+  //   (err, result) => {
+  //     if (err) throw err;
+  //   }
+  // );
+  // db.query(
+  //   `insert into NineJars
+  // value(?,0,0,0,0,0,0,0,0,0,0);`,
+  //   [id],
+  //   (err, result) => {
+  //     if (err) throw err;
+  //   }
+  // );
 });
 
 // หน้า Sub page จากหน้าashboard
 // Routes for the sub-pages of the dashboard
 
-app.get('/dashboard/Grading', (req, res) => {
-  res.sendFile(__dirname + '/financial-health.html');
+app.get("/dashboard/Grading", (req, res) => {
+  res.sendFile(__dirname + "/financial-health.html");
 });
 
 app.get("/dashboard/Suggestions", (req, res) => {
@@ -102,7 +191,7 @@ app.get("/dashboard/Calculation", (req, res) => {
   res.sendFile(filePath);
 });
 
-app.get("/dashboard/UserProfile", (req, res) => {
+app.get("/profile", (req, res) => {
   //Frontend/Personal Info/index.html
   const filePath = path.join(__dirname, "../Frontend/Personal Info/index.html");
   res.sendFile(filePath);
@@ -115,7 +204,6 @@ app.get("/dashboard/test-grading", (req, res) => {
   );
   res.sendFile(filePath);
 });
-
 
 // ---------------------------------------------//
 //Display lasted Grading lelvel
@@ -131,83 +219,142 @@ app.get("/dashboard/test-grading", (req, res) => {
 //   // Redirect the user back to the Dashboard page and pass the result as a query parameter
 //   res.redirect("/dashboard?result=" + result);
 // });
-
-app.get('/api/get-grade-info/:id', (req, res) => {
+app.get("/api/get-user/:id", (req, res) => {
   const id = req.params.id;
-  db.query('SELECT * FROM BasicFinancialHealthcheck.GradeLevel where UserID=?', [id], (err, result) => {
-    if(err) throw err;
-    if(result.length>0){
-      res.json(result[0]);
+  db.query(
+    `SELECT * FROM BasicFinancialHealthcheack.Userinfo WHERE UserID = ?`,
+    [id],
+    (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+        throw err;
+      }
+      res.json(result);
     }
-    else{
-      res.json({message: "No data found."});
+  );
+});
+
+app.get("/api/get-grade-info/:id", (req, res) => {
+  const id = req.params.id;
+  db.query(
+    "SELECT * FROM BasicFinancialHealthcheck.GradeLevel where UserID=?",
+    [id],
+    (err, result) => {
+      if (err) throw err;
+      if (result.length > 0) {
+        res.json(result[0]);
+      } else {
+        res.json({ message: "No data found." });
+      }
     }
-  })
+  );
 });
 
 // Get user financial health(temp) by id
 // send params as an id.
 app.get("/api/get-financial-health/:id", (req, res) => {
   const id = req.params.id;
-  db.query("SELECT g.Grade_level, n.Jar_Ness+n.Jar_Edu+n.Jar_Play+n.Jar_Give+n.Jar_Insurance+n.Jar_Retirement+n.Jar_Emergency+n.Jar_MoneyFreedom+n.Jar_Debt as Total FROM GradeLevel as g INNER JOIN NineJars as n on g.UserID=n.JarID WHERE g.UserID=?", [id], (err, result) => {
-    if(err) throw err;
-    if(result.length>0){
-      const payload ={
-        moneyLevel : result[0].Grade_level,
-        jars : result[0].Total,
+  db.query(
+    "SELECT g.Grade_level, n.Jar_Ness+n.Jar_Edu+n.Jar_Play+n.Jar_Give+n.Jar_Insurance+n.Jar_Retirement+n.Jar_Emergency+n.Jar_MoneyFreedom+n.Jar_Debt as Total FROM GradeLevel as g INNER JOIN NineJars as n on g.UserID=n.JarID WHERE g.UserID=?",
+    [id],
+    (err, result) => {
+      if (err) throw err;
+      if (result.length > 0) {
+        const payload = {
+          moneyLevel: result[0].Grade_level,
+          jars: result[0].Total,
+        };
+        res.json(payload);
       }
-      res.json(payload); 
     }
-  });
-
+  );
 });
 
 // update user financial health(temp) by id
 app.post("/api/insert-financial-health", (req, res) => {
-
   console.log(req.body);
-  const {userid, savingRatio, debtRatio, emergencyFundRatio, netWorth, moneyLevel} = req.body;
-  const level = moneyLevel.split('.')[1];
-  db.query('INSERT INTO GradeLevel (UserID, GradeID,Grade_level,Grade_SavingRatio,Grade_DebtRatio,Grade_EmergencyRatio,Grade_Networth,Grade_level_name,Grade_description,Grade_Record) VALUES(?,?,?,?,?,?,?,?,?, NOW() ) ON DUPLICATE KEY UPDATE    Grade_level = ?,Grade_SavingRatio = ?,Grade_DebtRatio = ?,Grade_EmergencyRatio = ?,Grade_Networth = ?,Grade_level_name = ?,Grade_description = ?,Grade_Record = NOW();',[userid,userid, level,savingRatio, debtRatio, emergencyFundRatio, netWorth, '','',level, savingRatio, debtRatio, emergencyFundRatio, netWorth, '', ''],
-  (err,result)=>{
-    if(err) throw err
+  const {
+    userid,
+    savingRatio,
+    debtRatio,
+    emergencyFundRatio,
+    netWorth,
+    moneyLevel,
+  } = req.body;
+  const level = moneyLevel.split(".")[1];
+  db.query(
+    "INSERT INTO GradeLevel (UserID, GradeID,Grade_level,Grade_SavingRatio,Grade_DebtRatio,Grade_EmergencyRatio,Grade_Networth,Grade_level_name,Grade_description,Grade_Record) VALUES(?,?,?,?,?,?,?,?,?, NOW() ) ON DUPLICATE KEY UPDATE    Grade_level = ?,Grade_SavingRatio = ?,Grade_DebtRatio = ?,Grade_EmergencyRatio = ?,Grade_Networth = ?,Grade_level_name = ?,Grade_description = ?,Grade_Record = NOW();",
+    [
+      userid,
+      userid,
+      level,
+      savingRatio,
+      debtRatio,
+      emergencyFundRatio,
+      netWorth,
+      "",
+      "",
+      level,
+      savingRatio,
+      debtRatio,
+      emergencyFundRatio,
+      netWorth,
+      "",
+      "",
+    ],
+    (err, result) => {
+      if (err) throw err;
 
-    if(result.affectedRows > 0){
-      res.json({status:'success'});
-    }else{
-      res.json({status:'failed'});  
+      if (result.affectedRows > 0) {
+        res.json({ status: "success" });
+      } else {
+        res.json({ status: "failed" });
+      }
     }
-  })
+  );
 });
 
-app.get('/api/get-jars/:id',(req,res)=>{
+app.get("/api/get-jars/:id", (req, res) => {
   const userid = req.params.id;
-  db.query('SELECT * FROM NineJars WHERE JarID=?',[userid],(err,result)=>{
-    if(err) throw err;
-    if(result.length>0){
+  db.query("SELECT * FROM NineJars WHERE JarID=?", [userid], (err, result) => {
+    if (err) throw err;
+    if (result.length > 0) {
       res.json(result[0]);
-    }
-    else{
-      res.json({status:'failed'});
+    } else {
+      res.json({ status: "failed" });
     }
   });
 });
 
-app.put('/api/update-jars/:id', (req, res) => {
+app.put("/api/update-jars/:id", (req, res) => {
   const id = req.params.id;
   const jar = req.body.jar;
   console.log(jar);
-  db.query('UPDATE NineJars SET Jar_Ness=?,Jar_Edu=?,Jar_Play=?,Jar_Give=?,Jar_Insurance=?,Jar_Retirement=?,Jar_Emergency=?,Jar_MoneyFreedom=?,Jar_Debt=? WHERE JarID=?',[jar.necessity,jar.education,jar.play,jar.giving,jar.insurance,jar.retirement,jar.emergency,jar.freedom,jar.debt,id],(err,result)=>{
-    if(err) throw err;
+  db.query(
+    "UPDATE NineJars SET Jar_Ness=?,Jar_Edu=?,Jar_Play=?,Jar_Give=?,Jar_Insurance=?,Jar_Retirement=?,Jar_Emergency=?,Jar_MoneyFreedom=?,Jar_Debt=? WHERE JarID=?",
+    [
+      jar.necessity,
+      jar.education,
+      jar.play,
+      jar.giving,
+      jar.insurance,
+      jar.retirement,
+      jar.emergency,
+      jar.freedom,
+      jar.debt,
+      id,
+    ],
+    (err, result) => {
+      if (err) throw err;
 
-    if(result.affectedRows>0){
-      res.json({status:'success'});
-    }else{
-      res.json({status:'failed'});
-
+      if (result.affectedRows > 0) {
+        res.json({ status: "success" });
+      } else {
+        res.json({ status: "failed" });
+      }
     }
-  });
-})
+  );
+});
 
 // ---------------------------------------------//
 app.get("/", (req, res) => {

@@ -1,42 +1,81 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Form Validation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="signup-style.css">
-    <script defer src="/js/signup-script.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="signup-style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container">
-        <form id="form" action="/">
-            <h1>ลงทะเบียน</h1>
-            <div class="input-control">
-                <label for="username">ชื่อ-นามสกุล</label>
-                <input id="username" name="username" type="text">
-                <div class="error"></div>
-            </div>
-            <div class="input-control">
-                <label for="email">อีเมลล์</label>
-                <input id="email" name="email" type="text">
-                <div class="error"></div>
-            </div>
-            <div class="input-control">
-                <label for="password">รหัสผ่าน</label>
-                <input id="password"name="password" type="password">
-                <div class="error"></div>
-            </div>
-            <div class="input-control">
-                <label for="password2">กรอกรหัสผ่านอีกครั้ง</label>
-                <input id="password2"name="password2" type="password">
-                <div class="error"></div>
-            </div>
-            <button type="submit">เข้าใช้ระบบ</button>
-        </form>
+      <div id="form" action="#">
+        <h1>ลงทะเบียน</h1>
+        <div class="input-control">
+          <label for="username">ชื่อ-นามสกุล</label>
+          <input id="username" name="username" type="text" />
+          <div class="error"></div>
+        </div>
+        <div class="input-control">
+          <label for="email">อีเมลล์</label>
+          <input id="email" name="email" type="text" />
+          <div class="error"></div>
+        </div>
+        <div class="input-control">
+          <label for="password">รหัสผ่าน</label>
+          <input id="password" name="password" type="password" />
+          <div class="error"></div>
+        </div>
+        <div class="input-control">
+          <label for="password2">กรอกรหัสผ่านอีกครั้ง</label>
+          <input id="password2" name="password2" type="password" />
+          <div class="error"></div>
+        </div>
+        <button onclick="submit()">เข้าใช้ระบบ</button>
+      </form>
     </div>
-</body>
+  </body>
+  <script>
+
+    function submit() {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPass = document.getElementById('password2').value;
+        if(password !== confirmPass) 
+            return alert("Password and confirm password doesn't match.")
+        
+        fetch('http://localhost:3000/auth/register',{
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+            {username: username, email: email, password: password}
+            )
+        }).then(res=>{
+            if(res.redirected && res.status == 201){
+                window.location.href = res.url;
+            }else if(res.status === 401){
+                return res.json();
+            }        
+        }).then(res =>{
+            document.getElementById('alert-message').innerHTML= res.error;
+            console.log(res.error);
+        })
+        .catch(err =>{
+            console.log(err);
+        })
+
+    }
+  </script>
 </html>

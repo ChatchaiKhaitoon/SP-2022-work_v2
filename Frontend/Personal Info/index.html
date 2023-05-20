@@ -34,22 +34,38 @@
             <div class="fields">
               <div class="input-field">
                 <label>ชื่อ</label>
-                <input type="text" placeholder="Enter your name" required />
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="Enter your name"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>วันเกิด</label>
-                <input type="date" placeholder="Enter birth date" required />
+                <input
+                  id="birthday"
+                  type="date"
+                  placeholder="Enter birth date"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>อีเมล</label>
-                <input type="text" placeholder="Enter your email" required />
+                <input
+                  id="email"
+                  type="text"
+                  placeholder="Enter your email"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>เบอร์โทรศัพท์</label>
                 <input
+                  id="phone"
                   type="number"
                   placeholder="Enter mobile number"
                   required
@@ -60,17 +76,18 @@
                 <label>เพศ</label>
                 <select required>
                   <option disabled selected>เลือกเพศ</option>
-                  <option>ชาย</option>
-                  <option>หญิง</option>
-                  <option>อื่นๆ</option>
+                  <option value="male">ชาย</option>
+                  <option value="female">หญิง</option>
+                  <option value="other">อื่นๆ</option>
                 </select>
               </div>
 
               <div class="input-field">
                 <label>สภานภาพ</label>
                 <input
+                  id="occupation"
                   type="text"
-                  placeholder="Enter your ccupation"
+                  placeholder="Enter your occupation"
                   required
                 />
               </div>
@@ -81,17 +98,28 @@
             <div class="fields">
               <div class="input-field">
                 <label>ชื่อแสดง</label>
-                <input type="text" placeholder="Enter ID type" required />
+                <input
+                  id="alias"
+                  type="text"
+                  placeholder="Enter alias"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>รายได้</label>
-                <input type="number" placeholder="Enter ID number" required />
+                <input
+                  id="income"
+                  type="number"
+                  placeholder="Enter income"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>อาชีพ</label>
                 <input
+                  id="job"
                   type="text"
                   placeholder="Enter issued authority"
                   required
@@ -113,27 +141,48 @@
             <div class="fields">
               <div class="input-field">
                 <label>รายได้ต่อเดือน</label>
-                <input type="number" placeholder="Enter expense per month" required />
+                <input
+                  id="incomePerMonth"
+                  type="number"
+                  placeholder="Enter expense per month"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>รายจ่ายต่อเดือน</label>
-                <input type="number" placeholder="Enter expense per month" required />
+                <input
+                  id="expensePerMonth"
+                  type="number"
+                  placeholder="Enter expense per month"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>รายจ่ายคงที่</label>
-                <input type="number" placeholder="Enter fixed cost" required />
+                <input
+                  id="fixedCost"
+                  type="number"
+                  placeholder="Enter fixed cost"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>ทรัพย์สิน</label>
-                <input type="number" placeholder="Enter your asset" required />
+                <input
+                  id="asset"
+                  type="number"
+                  placeholder="Enter your asset"
+                  required
+                />
               </div>
 
               <div class="input-field">
                 <label>หนี้สิน</label>
                 <input
+                  id="liability"
                   type="number"
                   placeholder="Enter liability"
                   required
@@ -142,11 +191,16 @@
 
               <div class="input-field">
                 <label>เงินออม</label>
-                <input type="number" placeholder="Enter your saving" required />
+                <input
+                  id="saving"
+                  type="number"
+                  placeholder="Enter your saving"
+                  required
+                />
               </div>
             </div>
           </div>
-            <!-- Back button -->
+          <!-- Back button -->
           <div class="details family">
             <div class="buttons">
               <div class="backBtn">
@@ -154,7 +208,7 @@
                 <span class="btnText">Back</span>
               </div>
 
-              <button class="sumbit">
+              <button class="sumbit" onclick="submit()">
                 <span class="btnText">Submit</span>
                 <i class="uil uil-navigator"></i>
               </button>
@@ -165,5 +219,25 @@
     </div>
 
     <script src="/js/personal-info-script.js"></script>
+    <script>
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const userId = urlParams.get("userid");
+      window.sessionStorage.setItem("userid", userId);
+
+      function getUserProfile() {
+        fetch(`http://localhost:3000/api/get-user/${userId}`)
+          .then((res) => res.json())
+          .then((res) => console.log(res));
+      }
+
+      function submit() {
+        console.log("submit");
+      }
+
+      function displayuser() {}
+
+      getUserProfile();
+    </script>
   </body>
 </html>
