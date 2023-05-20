@@ -8,6 +8,8 @@ import url from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+//MySQL Connection
+
 // Create an Express app
 const app = express();
 app.use(express.urlencoded({ extended: "false" }));
@@ -58,7 +60,33 @@ app.post("/auth/login", (req, res) => {
     }
   });
 
-//
+// Personal profile To grading 
+let personalProfileData = null; // Variable to store the user's personal profile data temporarily
+
+// Route for the Personal profile page (GET request)
+app.get('/Userprofile', (req, res) => {
+  res.sendFile(__dirname + '../Frontend/Userprofile.html');
+});
+
+// Route for handling the Personal profile form submission (POST request)
+app.post('/personalprofile', (req, res) => {
+  personalProfileData = req.body; // Store the personal profile data from the request body
+  res.redirect('../Frontend/Gradingpage'); // Redirect to the Grading page
+});
+
+// Route for the Grading page (GET request)
+app.get('../Frontend/Gradingpage', (req, res) => {
+  // Use the personalProfileData for calculations and rendering the Grading page
+  // You can access the individual fields like personalProfileData.income, personalProfileData.expense, etc.
+  
+  // Example calculation: Calculate the money index
+  const moneyIndex = personalProfileData.income - personalProfileData.expense;
+
+  // Render the Grading page and pass the calculated values as variables
+  res.render('../Frontend/Gradingpage', { moneyIndex });
+});
+
+// Next 
 
 });
 
