@@ -222,7 +222,33 @@ app.get("/dashboard/test-grading", (req, res) => {
 app.get("/api/get-user/:id", (req, res) => {
   const id = req.params.id;
   db.query(
-    `SELECT * FROM BasicFinancialHealthcheack.Userinfo WHERE UserID = ?`,
+    `SELECT 
+    u.UserID,
+    u.User_Name,
+    u.User_birthday,
+    u.User_phone,
+    u.User_sex,
+    u.User_marital_status,
+    u.User_alias,
+    u.User_income,
+    u.User_job,
+    u.User_income_per_month,
+    u.User_expense,
+    u.User_expense_per_month,
+    u.User_fixed_cost,
+    u.User_asset,
+    u.User_liabilities,
+    u.User_saving,
+    u.User_variable_cost,
+    u.User_external_debt, 
+    u.User_internal_debt, 
+    u.User_insurance ,
+    r.User_Email,
+    r.id
+    FROM BasicFinancialHealthcheack.Userinfo as u
+    JOIN BasicFinancialHealthcheack.registration as r 
+    ON u.UserID = r.id
+    WHERE u.UserID=?`,
     [id],
     (err, result) => {
       if (err) {
@@ -232,6 +258,91 @@ app.get("/api/get-user/:id", (req, res) => {
       res.json(result);
     }
   );
+});
+
+app.post("/api/update-userinfo", (req, res) => {
+  const {
+    UserID,
+    User_Name,
+    User_birthday,
+    User_phone,
+    User_sex,
+    User_marital_status,
+    User_alias,
+    User_income,
+    User_job,
+    User_income_per_month,
+    User_expense,
+    User_expense_per_month,
+    User_fixed_cost,
+    User_asset,
+    User_liabilities,
+    User_saving,
+    User_Email,
+  } = req.body;
+  if (req.body === undefined) {
+    res.status(405).json({ error: "payload is missing." });
+  } else {
+    // don't ask why I use this, I don't know either.
+    console.log(req.body);
+    db.query(
+      `
+    START TRANSACTION;
+      UPDATE BasicFinancialHealthcheack.Userinfo 
+      SET User_Name = ?,
+        User_birthday = ?,
+        User_phone = ?,
+        User_sex = ?,
+        User_marital_status = ?,
+        User_alias = ?,
+        User_income = ?,
+        User_job = ?,
+        User_income_per_month = ?,
+        User_expense = ?,
+        User_expense_per_month = ?,
+        User_fixed_cost = ?,
+        User_asset = ?,
+        User_liabilities = ?,
+        User_saving = ?
+      WHERE
+        UserID = ?;
+      
+      UPDATE BasicFinancialHealthcheack.registration 
+      SET 
+        User_Email = ?
+      WHERE
+        id = ?;
+    COMMIT;
+    `,
+      [
+        User_Name,
+        User_birthday,
+        User_phone,
+        User_sex,
+        User_marital_status,
+        User_alias,
+        User_income,
+        User_job,
+        User_income_per_month,
+        User_expense,
+        User_expense_per_month,
+        User_fixed_cost,
+        User_asset,
+        User_liabilities,
+        User_saving,
+        UserID,
+        User_Email,
+        UserID,
+      ],
+      (err, result) => {
+        if (err) throw err;
+        else {
+          console.log(result);
+          res.json({ message: "Update success." });
+        }
+      }
+    );
+  }
 });
 
 app.get("/api/get-grade-info/:id", (req, res) => {

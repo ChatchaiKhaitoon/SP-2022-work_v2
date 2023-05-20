@@ -115,7 +115,7 @@ form .fields .input-field{
 .input-field input[type="date"]:valid{
     color: #333;
 }
-.container form button, .backBtn{
+.container form button,.sumbit-btn, .backBtn{
     display: flex;
     align-items: center;
     justify-content: center;

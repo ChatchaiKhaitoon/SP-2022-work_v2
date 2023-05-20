@@ -74,20 +74,20 @@
 
               <div class="input-field">
                 <label>เพศ</label>
-                <select required>
+                <select id="sexual" required>
                   <option disabled selected>เลือกเพศ</option>
-                  <option value="male">ชาย</option>
-                  <option value="female">หญิง</option>
-                  <option value="other">อื่นๆ</option>
+                  <option value="ชาย">ชาย</option>
+                  <option value="หญิง">หญิง</option>
+                  <option value="อื่น">อื่นๆ</option>
                 </select>
               </div>
 
               <div class="input-field">
                 <label>สภานภาพ</label>
                 <input
-                  id="occupation"
+                  id="maritalStatus"
                   type="text"
-                  placeholder="Enter your occupation"
+                  placeholder="Enter your maritalStatus"
                   required
                 />
               </div>
@@ -208,36 +208,100 @@
                 <span class="btnText">Back</span>
               </div>
 
-              <button class="sumbit" onclick="submit()">
+              <div class="sumbit-btn" type="submit" onclick="submit()">
                 <span class="btnText">Submit</span>
                 <i class="uil uil-navigator"></i>
-              </button>
+              </div>
             </div>
           </div>
         </div>
       </form>
     </div>
 
-    <script src="/js/personal-info-script.js"></script>
     <script>
+      let userInfo = {};
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const userId = urlParams.get("userid");
       window.sessionStorage.setItem("userid", userId);
 
+      let input = document.querySelectorAll("input");
+      let select = document.querySelectorAll("select");
+      // input.forEach((i) => i.removeAttribute("required"));
+
+      let name = document.getElementById("name");
+      let birthday = document.getElementById("birthday");
+      let email = document.getElementById("email");
+      let phone = document.getElementById("phone");
+      let sexual = document.getElementById("sexual");
+      let maritalStatus = document.getElementById("maritalStatus");
+      let alias = document.getElementById("alias");
+      let income = document.getElementById("income");
+      let job = document.getElementById("job");
+      let incomePerMonth = document.getElementById("incomePerMonth");
+      let expensePerMonth = document.getElementById("expensePerMonth");
+      let fixedCost = document.getElementById("fixedCost");
+      let asset = document.getElementById("asset");
+      let liability = document.getElementById("liability");
+      let saving = document.getElementById("saving");
+
       function getUserProfile() {
         fetch(`http://localhost:3000/api/get-user/${userId}`)
           .then((res) => res.json())
-          .then((res) => console.log(res));
+          .then((res) => {
+            if (res.length > 0) {
+              userInfo = res[0];
+              name.value = res[0].User_Name;
+              var date = new Date(res[0].User_birthday);
+              var currentDate = date.toISOString().substring(0, 10);
+              birthday.value = currentDate;
+              phone.value = res[0].User_phone;
+              email.value = res[0].User_Email;
+              sexual.value = res[0].User_sex;
+              maritalStatus.value = res[0].User_marital_status;
+              alias.value = res[0].User_alias;
+              income.value = res[0].User_income;
+              job.value = res[0].User_job;
+            }
+          });
       }
 
       function submit() {
-        console.log("submit");
+        // query select all input and map this  togeter?
+        (userInfo.User_Name = name.value),
+          (userInfo.User_birthday = birthday.value),
+          (userInfo.User_phone = phone.value),
+          (userInfo.User_sex = sexual.value),
+          (userInfo.User_marital_status = maritalStatus.value),
+          (userInfo.User_alias = alias.value),
+          (userInfo.User_income = income.value),
+          (userInfo.User_job = job.value),
+          (userInfo.User_income_per_month = incomePerMonth.value),
+          (userInfo.User_expense = expensePerMonth.value),
+          (userInfo.User_expense_per_month = expensePerMonth.value),
+          (userInfo.User_fixed_cost = fixedCost.value),
+          (userInfo.User_asset = asset.value),
+          (userInfo.User_liabilities = liability.value),
+          (userInfo.User_saving = saving.value),
+          fetch(`http://localhost:3000/api/update-userinfo/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userInfo),
+          })
+            .then((res) => {
+              console.log(res);
+              return res.json();
+            })
+            .then((res) => console.log(res))
+            .catch((err) => {
+              console.log(err);
+            });
       }
-
-      function displayuser() {}
 
       getUserProfile();
     </script>
+    <script src="/js/personal-info-script.js"></script>
   </body>
 </html>
