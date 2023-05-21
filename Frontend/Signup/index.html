@@ -63,7 +63,8 @@
             {username: username, email: email, password: password}
             )
         }).then(res=>{
-            if(res.redirected && res.status == 201){
+            console.log(res);
+            if(res.redirected){
                 window.location.href = res.url;
             }else if(res.status === 401){
                 return res.json();
