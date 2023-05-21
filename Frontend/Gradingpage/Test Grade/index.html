@@ -9,7 +9,7 @@
     />
   </head>
   <body>
-    <div>
+    <div id="main">
       <h1>เครื่องคำนวณสุขภาพการเงินด้วย (Money Index)</h1>
       <form>
         <div class="form-group">
@@ -60,27 +60,4 @@
   </div> -->
     </div>
   </body>
-  <script>
-    /**
-    let incomeInput = document.getElementById("monthly-income");
-    let expressInput = document.getAnimations('monthly-expenses');
-    let savingsInput = document.getElementById("savings");
-    let fixedcostInput = document.getElementById("fixed-cost");
-    let assetsInput = document.getElementById("assets");
-    let liabilitiesInput = document.getElementById("liabilities");
-    const userid = window.sessionStorage.getItem("userid");
-    fetch(`http://localhost:3000/api/get-grade-info/${userid}`)
-    .then((res)=>{
-      return res.json();
-    }).then((res)=>{
-    console.log(res);
-      incomeInput.value = res.Grade_Networth;
-      expressInput.value = 0;
-      savingsInput.value = Grade_SavingRatio;
-      
-    }).catch((err)=>{
-      console.log(err)
-    });
-    */
-  </script>
 </html>

@@ -46,7 +46,7 @@
           </a>
         </li>
         <li>
-          <a href="/dashboard/test-grading">
+          <a href="#" onclick="financialCheck()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -184,7 +184,7 @@
       <!-- NAVBAR -->
 
       <!-- MAIN -->
-      <main>
+      <main id="main">
         <div class="head-title">
           <div class="left">
             <h1>แดชบอร์ด</h1>
@@ -376,6 +376,30 @@
             console.log(err);
           });
       }
+
+      function financialCheck() {
+        fetch("http://localhost:3000/dashboard/test-grading")
+          .then((res) => res.text())
+          .then((html) => {
+            // var sideMenu = document.querySelector(".side-menu");
+            // var listItems = sideMenu.querySelectorAll("li");
+            // for (var i = 0; i < listItems.length; i++) {
+            //   // Add the class name "active" to the current list item
+            //   if(listItems[i].innerText == ????){
+            //     listItems[i].classList.add("active");
+            //   }
+            // }
+            var main = document.getElementById("main");
+            main.innerHTML = "";
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, "text/html");
+            main.appendChild(doc.getElementById("main"));
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+
       window.addEventListener("pageshow", function (event) {
         fetchGeneralInfo();
       });
