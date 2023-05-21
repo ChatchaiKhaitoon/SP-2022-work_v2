@@ -76,4 +76,41 @@ let jars = {
   function updateJar(jar) {
     document.getElementById(jar).value = jars[jar];
   }
+
+  // Update the 9 Jar calculation
+const saveBtn = document.getElementById('save-btn');
+const jarInputs = document.getElementsByClassName('jar-input');
+const resultDiv = document.getElementById('result');
+
+saveBtn.addEventListener('click', () => {
+  const jarsData = {};
+
+  for (let i = 0; i < jarInputs.length; i++) {
+    const value = parseFloat(jarInputs[i].value) || 0;
+
+    if (value === 0) {
+      resultDiv.textContent = 'Please enter values for all jars.';
+      return;
+    }
+
+    jarsData[`jar${i + 1}`] = value;
+  }
+
+  fetch('/api/save-jars', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(jarsData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      resultDiv.textContent = 'Jars data saved successfully.';
+    })
+    .catch((error) => {
+      console.error(error);
+      resultDiv.textContent = 'Error occurred while saving jars data.';
+    });
+});
   

@@ -4,6 +4,8 @@ import apirouter from "./api/api.js";
 import authrouter from "./api/auth.js";
 // Import required modules
 
+//MySQL Connection
+
 // Create an Express app
 const app = express();
 app.use(express.urlencoded({ extended: "false" }));
@@ -12,9 +14,11 @@ app.use(express.json());
 app.use(express.static("../Frontend/public", { type: "text/css" }));
 
 // Listen for requests at the root path and send the index.html file as a response
+
 app.use("/", router);
 app.use("/api", apirouter);
 app.use("/auth", authrouter);
+
 
 // ---------------------------------------------//
 
