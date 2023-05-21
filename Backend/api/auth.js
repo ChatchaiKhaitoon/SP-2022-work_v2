@@ -32,30 +32,36 @@ authrouter.post("/login", (req, res) => {
 authrouter.post("/register", async (req, res) => {
   if (req.body == undefined)
     return res.status(401).json({ message: "expect payload to not be empty." });
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
   db.query(
     `
     INSERT INTO Registration(User_Email, User_password)
     value(?,?); 
-    SELECT 
-      id 
-    FROM Registration 
-    ORDER BY id DESC 
-    LIMIT 1;`,
-    [email, password],
+    
+    INSERT INTO Userinfo (UserID, User_Name)
+    SELECT *,? FROM (SELECT id FROM REGISTRATION ORDER BY id DESC LIMIT 1) as TEP;
+    
+    SELECT id FROM Registration 
+    ORDER BY id DESC LIMIT 1;
+    
+    `,
+    [email, password, username],
     (err, result) => {
       if (err) {
         res.status(500).json({ error: err });
-      }
-      const id = result[1][result[1].length - 1].id;
+        throw err;
+      }else{
+        const id = result[2][0].id
 
-      res.redirect(
-        url.format({
-          pathname: "/profile",
-          query: { userid: id },
-        })
-      );
+        res.redirect(
+          url.format({
+            pathname: "/profile",
+            query: { userid: id },
+          })
+        );
+      }
+      
     }
   );
 });

@@ -254,7 +254,8 @@
               name.value = res[0].User_Name;
               var date = new Date(res[0].User_birthday);
               var currentDate = date.toISOString().substring(0, 10);
-              birthday.value = currentDate;
+              birthday.value =
+                res[0].User_birthday === null ? null : currentDate;
               phone.value = res[0].User_phone;
               email.value = res[0].User_Email;
               sexual.value = res[0].User_sex;
@@ -269,7 +270,7 @@
       function submit() {
         // query select all input and map this  togeter?
         (userInfo.UserID = userId),
-        (userInfo.User_Email = email.value),
+          (userInfo.User_Email = email.value),
           (userInfo.User_Name = name.value),
           (userInfo.User_birthday = birthday.value),
           (userInfo.User_phone = phone.value),
@@ -293,15 +294,17 @@
             body: JSON.stringify(userInfo),
           })
             .then((res) => {
-              console.log(res);
-              return res.json();
+              if (res.redirected) {
+                window.location.href = res.url;
+              } else {
+                return res.json();
+              }
             })
             .then((res) => console.log(res))
             .catch((err) => {
               console.log(err);
             });
       }
-
       getUserProfile();
     </script>
     <script src="/js/personal-info-script.js"></script>

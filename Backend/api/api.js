@@ -1,5 +1,7 @@
 import { Router } from "express";
 import db from "../db_connect.js";
+import { calculate } from "../utils/calGradelevel.js";
+import url from "url";
 
 const apirouter = Router();
 
@@ -67,6 +69,18 @@ apirouter.post("/update-userinfo", (req, res) => {
   if (req.body === undefined) {
     res.status(405).json({ error: "payload is missing." });
   } else {
+    let { moneyLevel, savingRatio, debtRatio, emergencyFundRatio, netWorth } =
+      calculate(
+        User_income_per_month,
+        User_expense_per_month,
+        User_saving,
+        User_fixed_cost,
+        User_asset,
+        User_liabilities
+      );
+    const gradeLevel = moneyLevel.split(".")[1];
+    emergencyFundRatio =
+      emergencyFundRatio == Infinity ? 0 : emergencyFundRatio;
     // don't ask why I use this, I don't know either.
     db.query(
       `
@@ -74,6 +88,15 @@ apirouter.post("/update-userinfo", (req, res) => {
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
         ON DUPLICATE KEY
         UPDATE User_Name = ?,User_birthday = ?,User_phone = ?,User_sex = ?,User_marital_status = ?,User_alias = ?,User_income = ?,User_job = ?,User_income_per_month = ?,User_expense = ?,User_expense_per_month = ?,User_fixed_cost = ?,User_asset = ?,User_liabilities = ?,User_saving = ?;
+        
+        INSERT INTO GradeLevel (GradeID, Grade_level, Grade_SavingRatio, Grade_DebtRatio, Grade_EmergencyRatio, Grade_Networth, UserID)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        Grade_level = ?, Grade_SavingRatio=?, Grade_DebtRatio=?, Grade_EmergencyRatio=?, Grade_Networth=?;
+        
+        INSERT INTO NineJars (JarID)
+        SELECT * FROM (SELECT ?) AS tmp
+        WHERE NOT EXISTS (SELECT JarID FROM NineJars WHERE JarID = ?);
               
         UPDATE BasicFinancialHealthcheack.registration 
         SET 
@@ -82,6 +105,7 @@ apirouter.post("/update-userinfo", (req, res) => {
         id = ?;
       `,
       [
+        //Userinfo
         UserID,
         User_Name,
         User_birthday,
@@ -113,16 +137,34 @@ apirouter.post("/update-userinfo", (req, res) => {
         User_asset,
         User_liabilities,
         User_saving,
+        //GradeLevel
+        UserID,
+        gradeLevel,
+        savingRatio,
+        debtRatio,
+        emergencyFundRatio,
+        netWorth,
+        UserID,
+        gradeLevel,
+        savingRatio,
+        debtRatio,
+        emergencyFundRatio,
+        netWorth,
+        //NineJars
+        UserID,
+        UserID,
+        //Registration
         User_Email,
         UserID,
       ],
-      (err, result) => {
+      (err) => {
         if (err) {
           res.status(500).json({ error: err });
           throw err;
         } else {
-          console.log(result);
-          res.json({ message: "Update success." });
+          res.redirect(
+            url.format({ pathname: "/dashboard", query: { userid: UserID } })
+          );
         }
       }
     );
@@ -157,7 +199,7 @@ apirouter.get("/get-financial-health/:id", (req, res) => {
       if (result.length > 0) {
         const payload = {
           moneyLevel: result[0].Grade_level,
-          jars: result[0].Total,
+          jars: result[0].Total === null? 0 : result[0].Total,
         };
         res.json(payload);
       }
@@ -198,7 +240,10 @@ apirouter.post("/insert-financial-health", (req, res) => {
       "",
     ],
     (err, result) => {
-      if (err) throw err;
+      if (err) {
+        res.status(500).json({ error: err });
+        throw err;
+      }
 
       if (result.affectedRows > 0) {
         res.json({ status: "success" });
@@ -212,7 +257,10 @@ apirouter.post("/insert-financial-health", (req, res) => {
 apirouter.get("/get-jars/:id", (req, res) => {
   const userid = req.params.id;
   db.query("SELECT * FROM NineJars WHERE JarID=?", [userid], (err, result) => {
-    if (err) throw err;
+    if (err) {
+      res.status(500).json({ error: err });
+      throw err;
+    }
     if (result.length > 0) {
       res.json(result[0]);
     } else {
@@ -240,7 +288,10 @@ apirouter.put("/update-jars/:id", (req, res) => {
       id,
     ],
     (err, result) => {
-      if (err) throw err;
+      if (err) {
+        res.status(500).json({ error: err });
+        throw err;
+      }
 
       if (result.affectedRows > 0) {
         res.json({ status: "success" });

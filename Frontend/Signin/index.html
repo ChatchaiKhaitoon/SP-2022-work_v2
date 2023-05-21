@@ -4,79 +4,93 @@
   <head>
     <title>Sign in</title>
     <meta charset="utf-8" />
-    <link href="signin-style.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap" rel="stylesheet">
+    <link href="signin-style.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300&display=swap"
+      rel="stylesheet"
+    />
 
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <scrip src="C:\Users\khait\Desktop\KT_work\SP-2022 Work\Senior project\Frontend\9Jars-Moneymanagement\serverscript.js"></scrip>
+    <scrip
+      src="C:\Users\khait\Desktop\KT_work\SP-2022 Work\Senior project\Frontend\9Jars-Moneymanagement\serverscript.js"
+    ></scrip>
   </head>
   <body>
     <div id="message">
       <!-- Main content here -->
-    
+
       <div class="center">
-      <input type="checkbox" id="show" />
-      <label for="show" class="show-btn">ยินดีต้อนรับ</label>
-      <div class="container">
-        <label for="show" class="close-btn fas fa-times" title="close"></label>
-        <div class="text">เข้าสู่ระบบ
-        </div>
-        
+        <input type="checkbox" id="show" />
+        <label for="show" class="show-btn">ยินดีต้อนรับ</label>
+        <div class="container">
+          <label
+            for="show"
+            class="close-btn fas fa-times"
+            title="close"
+          ></label>
+          <div class="text">เข้าสู่ระบบ</div>
+
           <div class="data">
             <label>อีเมล</label>
             <!-- <input type="text" required /> -->
             <!-- <input type="text" placeholder="Enter your name" required> -->
-            <input type="text" class="form-control" id="email-reg" name="email">
+            <input
+              type="text"
+              class="form-control"
+              id="email-reg"
+              name="email"
+            />
           </div>
           <div class="data">
             <label>รหัสผ่าน</label>
             <!-- <input type="text" placeholder="Enter your password" required> -->
-            <input type="password" class="form-control" id="password-conf-reg" name="password-confirm">
+            <input
+              type="password"
+              class="form-control"
+              id="password-conf-reg"
+              name="password-confirm"
+            />
           </div>
           <div id="alert-message"></div>
           <div class="btn">
             <div class="inner"></div>
             <button onclick="login()">login</button>
-             <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
           </div>
           <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
           <div class="signup-link">
             <!-- มีบัญชีอยู่แล้ว? <a href="C:\Users\khait\Desktop\KT_work\SP-2022 Work\Senior project\Frontend\Signup\index.html">Signup now</a> -->
-            ยังไม่มีบัญชี? <a href="/Signup">Signup now</a>
-
+            ยังไม่มีบัญชี? <a href="/register">ลงทะเบียน</a>
           </div>
-        
+        </div>
       </div>
     </div>
-  </div>
   </body>
   <script>
-    function login(){
-      let email= document.getElementById('email-reg').value
-      let password= document.getElementById('password-conf-reg').value
-      fetch('http://localhost:3000/auth/login',{
-        method: 'POST',
+    function login() {
+      let email = document.getElementById("email-reg").value;
+      let password = document.getElementById("password-conf-reg").value;
+      fetch("http://localhost:3000/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(
-          {email: email, password: password}
-        )
+        body: JSON.stringify({ email: email, password: password }),
       })
-      .then(res=>{
-        if(res.redirected){
-          window.location.href = res.url;
-        }else if(res.status === 401){
-
-          return res.json();
-        }        
-      }).then(res =>{
-        document.getElementById('alert-message').innerHTML= res.error;
-        console.log(res.error);
-      })
-      .catch(err =>{
-        console.log(err);
-      })
+        .then((res) => {
+          if (res.redirected) {
+            window.location.href = res.url;
+          } else if (res.status === 401) {
+            return res.json();
+          }
+        })
+        .then((res) => {
+          document.getElementById("alert-message").innerHTML = res.error;
+          console.log(res.error);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   </script>
 </html>
