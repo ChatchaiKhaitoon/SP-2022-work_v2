@@ -137,7 +137,7 @@
           </a>
         </li>
         <li>
-          <a href="/dashboard/UserProfile">
+          <a onclick="refProfile()">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -379,6 +379,10 @@
       window.addEventListener("pageshow", function (event) {
         fetchGeneralInfo();
       });
+
+      function refProfile() {
+        window.location.href = "http://localhost:3000/profile?userid=" + userId;
+      }
     </script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </body>
