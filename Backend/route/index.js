@@ -1,16 +1,15 @@
 import { Router } from "express";
-import { fileURLToPath } from "url";
 import path, { dirname } from "path";
 
 const router = Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename).replace("/Backend/route", "");
-
+const __filename = process.cwd();
+console.log(__filename);
+const __dirname = dirname(__filename)
 
 router.get("/dashboard/grading", (req, res) => {
   const filePath = path.join(
     __dirname,
-    "../Frontend/Gradingpage/Test Grade/index.html"
+    "/Frontend/Gradingpage/Test Grade/index.html"
   );
   res.sendFile(filePath);
 });
@@ -38,7 +37,7 @@ router.get("/dashboard/Suggestions", (req, res) => {
   //Frontend/Suggestions/Test Suggestion/main.html
   const filePath = path.join(
     __dirname,
-    "../Frontend/Suggestions/Test Suggestion/main.html"
+    "/Frontend/Suggestions/Test Suggestion/main.html"
   );
   res.sendFile(filePath);
 });
@@ -47,7 +46,7 @@ router.get("/dashboard/Personalized-jars", (req, res) => {
   //Frontend/9Jars-Moneymanagement/Personalized Jars/main.html
   const filePath = path.join(
     __dirname,
-    "../Frontend/9Jars-Moneymanagement/Personalized Jars/main.html"
+    "/Frontend/9Jars-Moneymanagement/Personalized Jars/main.html"
   );
   res.sendFile(filePath);
 });
@@ -56,7 +55,7 @@ router.get("/dashboard/Fixed-jars", (req, res) => {
   //
   const filePath = path.join(
     __dirname,
-    "../Frontend/9Jars-Moneymanagement/Fixed Jars/test jar/index.html"
+    "/Frontend/9Jars-Moneymanagement/Fixed Jars/test jar/index.html"
   );
   res.sendFile(filePath);
 });
@@ -76,14 +75,14 @@ router.get("/profile", (req, res) => {
 router.get("/dashboard/test-grading", (req, res) => {
   const filePath = path.join(
     __dirname,
-    "../Frontend/Gradingpage/Test Grade/index.html"
+    "/Frontend/Gradingpage/Test Grade/index.html"
   );
   res.sendFile(filePath);
 });
 
 router.get("/", (req, res) => {
-    const filePath = path.join(__dirname, "../Frontend/Signin/index.html");
-    res.sendFile(filePath);
+  const filePath = path.join(__dirname, "/Frontend/Signin/index.html");
+  res.sendFile(filePath);
 });
 
 export default router;
