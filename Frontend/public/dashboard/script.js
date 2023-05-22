@@ -73,7 +73,7 @@ function calculate() {
     debtRatio <= 40 &&
     emergencyFundRatio >= 1 &&
     emergencyFundRatio <= 6 &&
-    netWorth > 0
+    netWorth > 0 
   ) {
     moneyLevel = "LV.3";
   } else if (
