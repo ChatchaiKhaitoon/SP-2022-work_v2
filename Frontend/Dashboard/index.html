@@ -340,18 +340,19 @@
     <!-- CONTENT -->
 
     <script>
-      const queryString = window.location.search; 
+      //get userid from url query.
+      const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
-      const userId = urlParams.get('userid');
+      const userId = urlParams.get("userid");
       window.sessionStorage.setItem("userid", userId);
-      console.log(userId);
+
       async function getData() {
         const res = await fetch(
           `http://localhost:3000/api/get-financial-health/${userId}`
         );
         return res.json();
       }
-      
+
       function fetchGeneralInfo() {
         const response = getData();
         response
@@ -367,18 +368,17 @@
             } = res;
             const moneyLevelHeader = document.getElementById("money-level");
             const jasrValueHeader = document.getElementById("jars-value");
-            
+
             moneyLevelHeader.innerHTML = "เลเวล " + moneyLevel;
-            jasrValueHeader.innerHTML = "฿"+jars;
+            jasrValueHeader.innerHTML = "฿" + jars;
           })
           .catch((err) => {
             console.log(err);
           });
-      };
+      }
       window.addEventListener("pageshow", function (event) {
         fetchGeneralInfo();
       });
-      
     </script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   </body>
