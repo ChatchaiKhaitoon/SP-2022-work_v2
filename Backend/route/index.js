@@ -5,8 +5,7 @@ import path, { dirname } from "path";
 const router = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename).replace("/Backend", "");
-console.log(__filename);
-console.log(__dirname);
+
 
 router.get("/dashboard/grading", (req, res) => {
   const filePath = path.join(
