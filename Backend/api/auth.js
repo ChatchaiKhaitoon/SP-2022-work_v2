@@ -3,6 +3,9 @@ import db from "../db_connect.js";
 import url from "url";
 const authrouter = Router();
 
+/**
+Check email and password from Registration table.
+*/
 authrouter.post("/login", (req, res) => {
   //todo check login เอาข้อมูลจากRegistration
   const { email, password } = req.body;
@@ -29,6 +32,11 @@ authrouter.post("/login", (req, res) => {
   //
 });
 
+/**
+Register new user.
+Create new user in Registration table and Userinfo table.
+After creaetion, redirect to profile page with userid.
+*/
 authrouter.post("/register", async (req, res) => {
   if (req.body == undefined)
     return res.status(401).json({ message: "expect payload to not be empty." });
@@ -51,8 +59,8 @@ authrouter.post("/register", async (req, res) => {
       if (err) {
         res.status(500).json({ error: err });
         throw err;
-      }else{
-        const id = result[2][0].id
+      } else {
+        const id = result[2][0].id;
 
         res.redirect(
           url.format({
@@ -61,7 +69,6 @@ authrouter.post("/register", async (req, res) => {
           })
         );
       }
-      
     }
   );
 });
