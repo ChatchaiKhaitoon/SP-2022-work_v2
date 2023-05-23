@@ -104,6 +104,13 @@ CREATE TABLE SuggestandMap (
     foreign key(StageID) REFERENCES StageLevel(StageID)
 );
 
+CREATE TABLE Assessments (
+  UserID INT,
+  Assessment_Date DATETIME,
+  Lv_Status INT,
+  FOREIGN KEY (UserID) REFERENCES Userinfo(UserID)
+);
+
 /* Inserting data into Registration table */
 INSERT INTO Registration (User_Email, User_Password) 
 VALUES ('johndoe@example.com', '1234');
@@ -131,6 +138,9 @@ VALUES (1, 'Suggestion 1', 'Description for Suggestion 1', 'Record for Suggestio
 /* Inserting data into SuggestandMap table */
 INSERT INTO SuggestandMap (SM_ID, StageID)
 VALUES (1, 1);
+
+INSERT INTO Assessments (UserID, Assessment_Date, Lv_Status)
+VALUE(1, NOW(), 0);
 
 
 
