@@ -85,6 +85,7 @@ apirouter.post("/update-userinfo", (req, res) => {
         User_asset,
         User_liabilities
       );
+      console.log(moneyLevel)
     const gradeLevel = moneyLevel.split(".")[1];
     emergencyFundRatio =
       emergencyFundRatio == Infinity ? 0 : emergencyFundRatio;

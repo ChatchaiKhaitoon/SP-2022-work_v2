@@ -16,7 +16,7 @@ export const calculate = (
   // Net Worth = Assets - Liabilities
   const netWorth = (assets - liabilities).toFixed(2);
   // Determine the money level based on the Money Index indicators
-  let moneyLevel;
+  let moneyLevel= "LV.0";
   if (
     savingRatio <= 9 &&
     debtRatio >= 40 &&
@@ -75,9 +75,13 @@ export const calculate = (
     netWorth > 0
   ) {
     moneyLevel = "LV.8";
-  } else {
-    moneyLevel = "Lv.1";
-  }
+  } else if (
+    savingRatio >= 20 &&
+    debtRatio < 40 &&
+    emergencyFundRatio > 12 &&
+    netWorth > 0 
+  )
+  
 
   return { moneyLevel, savingRatio, debtRatio, emergencyFundRatio, netWorth };
 };
