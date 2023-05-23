@@ -27,6 +27,7 @@
         min="0"
         step="0.01"
         placeholder="0.00"
+        value="0.00"
       />
       <button id="save">Save</button>
     </div>
@@ -42,7 +43,7 @@
         <div class="jar" data-percentage="40">
           <div class="jar-icon">🏺</div>
           <h3>เงินใช้จ่ายประจำ</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">40%</span>
@@ -51,7 +52,7 @@
         <div class="jar" data-percentage="5">
           <div class="jar-icon">🏺</div>
           <h3>เงินเพื่อการศึกษา</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">5%</span>
@@ -60,7 +61,7 @@
         <div class="jar" data-percentage="5">
           <div class="jar-icon">🏺</div>
           <h3>เงินให้รางวัลตัวเอง</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">5%</span>
@@ -69,7 +70,7 @@
         <div class="jar" data-percentage="5">
           <div class="jar-icon">🏺</div>
           <h3>เงินเพื่อแบ่งปัน</h3>
-         
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">5%</span>
@@ -78,7 +79,7 @@
         <div class="jar" data-percentage="10">
           <div class="jar-icon">🏺</div>
           <h3>เงินสำรองฉุกเฉิน</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">10%</span>
@@ -87,7 +88,7 @@
         <div class="jar" data-percentage="10">
           <div class="jar-icon">🏺</div>
           <h3>เงินเกษียณอายุ</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">10%</span>
@@ -96,7 +97,7 @@
         <div class="jar" data-percentage="5">
           <div class="jar-icon">🏺</div>
           <h3>เงินซื้อประกัน</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">5%</span>
@@ -105,7 +106,7 @@
         <div class="jar" data-percentage="5">
           <div class="jar-icon">🏺</div>
           <h3>เงินลงทุน ต่อยอด</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">5%</span>
@@ -114,7 +115,7 @@
         <div class="jar" data-percentage="15">
           <div class="jar-icon">🏺</div>
           <h3>เงินใช้หนี้</h3>
-          
+
           <button class="increase">+</button>
           <button class="decrease">-</button>
           <span class="percentage-display">15%</span>
@@ -122,5 +123,15 @@
       </div>
     </div>
     <script src="/js/fixed-jars-script.js"></script>
+    <script>
+      const userid = window.sessionStorage.getItem("userid");
+      fetch(`http://localhost:3000/api/get-user/${userid}`)
+        .then((res) => res.json())
+        .then((res) => {
+          const monthlyIncome = res[0].User_income_per_month;
+          document.getElementById("monthly-income").value = monthlyIncome;
+          document.getElementById("save").click();
+        });
+    </script>
   </body>
 </html>

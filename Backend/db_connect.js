@@ -10,7 +10,7 @@ const db = mysql.createConnection({
   multipleStatements: true,
 });
 
-db.query("USE BasicFinancialHealthcheack", (err, result) => {
+db.query("USE BasicFinancialHealthcheack", (err) => {
   if (err) throw err;
   console.log("Database Connected using BasicFinancialHealthcheck Database");
 });

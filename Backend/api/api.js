@@ -1,8 +1,12 @@
 import { Router } from "express";
 import db from "../db_connect.js";
+import { calculate } from "../utils/calGradelevel.js";
+import url from "url";
 
 const apirouter = Router();
-
+/**
+Get user by id.
+*/
 apirouter.get("/get-user/:id", (req, res) => {
   const id = req.params.id;
   db.query(
@@ -43,7 +47,12 @@ apirouter.get("/get-user/:id", (req, res) => {
     }
   );
 });
+/**
+Update user info by using userid.
 
+NOTE: This is not a good practice.
+INSERT INTO .... ON DUPLICATE KEY means if there is a duplicate key in the table, update the value.
+*/
 apirouter.post("/update-userinfo", (req, res) => {
   const {
     UserID,
@@ -67,21 +76,46 @@ apirouter.post("/update-userinfo", (req, res) => {
   if (req.body === undefined) {
     res.status(405).json({ error: "payload is missing." });
   } else {
+    let { moneyLevel, savingRatio, debtRatio, emergencyFundRatio, netWorth } =
+      calculate(
+        User_income_per_month,
+        User_expense_per_month,
+        User_saving,
+        User_fixed_cost,
+        User_asset,
+        User_liabilities
+      );
+    const gradeLevel = moneyLevel.split(".")[1];
+    emergencyFundRatio =
+      emergencyFundRatio == Infinity ? 0 : emergencyFundRatio;
     // don't ask why I use this, I don't know either.
     db.query(
       `
-        INSERT INTO BasicFinancialHealthcheack.Userinfo (UserID, User_Name, User_birthday, User_phone, User_sex, User_marital_status, User_alias, User_income, User_job, User_income_per_month, User_expense, User_expense_per_month, User_fixed_cost, User_asset, User_liabilities, User_saving)
+        INSERT INTO Userinfo (UserID, User_Name, User_birthday, User_phone, User_sex, User_marital_status, User_alias, User_income, User_job, User_income_per_month, User_expense, User_expense_per_month, User_fixed_cost, User_asset, User_liabilities, User_saving)
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) 
         ON DUPLICATE KEY
         UPDATE User_Name = ?,User_birthday = ?,User_phone = ?,User_sex = ?,User_marital_status = ?,User_alias = ?,User_income = ?,User_job = ?,User_income_per_month = ?,User_expense = ?,User_expense_per_month = ?,User_fixed_cost = ?,User_asset = ?,User_liabilities = ?,User_saving = ?;
+        
+        INSERT INTO GradeLevel (GradeID, Grade_level, Grade_SavingRatio, Grade_DebtRatio, Grade_EmergencyRatio, Grade_Networth, UserID)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+        Grade_level = ?, Grade_SavingRatio=?, Grade_DebtRatio=?, Grade_EmergencyRatio=?, Grade_Networth=?;
+        
+        INSERT INTO NineJars (JarID)
+        SELECT * FROM (SELECT ?) AS tmp
+        WHERE NOT EXISTS (SELECT JarID FROM NineJars WHERE JarID = ?);
               
         UPDATE BasicFinancialHealthcheack.registration 
         SET 
         User_Email = ?
         WHERE
         id = ?;
+        
+        INSERT INTO Assessments(UserID, Assessment_Date, Lv_Status)
+        VALUE(?,NOW(),?);
       `,
       [
+        //Userinfo
         UserID,
         User_Name,
         User_birthday,
@@ -113,22 +147,45 @@ apirouter.post("/update-userinfo", (req, res) => {
         User_asset,
         User_liabilities,
         User_saving,
+        //GradeLevel
+        UserID,
+        gradeLevel,
+        savingRatio,
+        debtRatio,
+        emergencyFundRatio,
+        netWorth,
+        UserID,
+        gradeLevel,
+        savingRatio,
+        debtRatio,
+        emergencyFundRatio,
+        netWorth,
+        //NineJars
+        UserID,
+        UserID,
+        //Registration
         User_Email,
         UserID,
+        //Assessments
+        UserID,
+        gradeLevel,
       ],
-      (err, result) => {
+      (err) => {
         if (err) {
           res.status(500).json({ error: err });
           throw err;
         } else {
-          console.log(result);
-          res.json({ message: "Update success." });
+          res.redirect(
+            url.format({ pathname: "/dashboard", query: { userid: UserID } })
+          );
         }
       }
     );
   }
 });
-
+/**
+Get grade infor by using userid from GradeLevel table.
+*/
 apirouter.get("/get-grade-info/:id", (req, res) => {
   const id = req.params.id;
   db.query(
@@ -157,7 +214,7 @@ apirouter.get("/get-financial-health/:id", (req, res) => {
       if (result.length > 0) {
         const payload = {
           moneyLevel: result[0].Grade_level,
-          jars: result[0].Total,
+          jars: result[0].Total === null ? 0 : result[0].Total,
         };
         res.json(payload);
       }
@@ -165,7 +222,7 @@ apirouter.get("/get-financial-health/:id", (req, res) => {
   );
 });
 
-// update user financial health(temp) by id
+// update user financial health by id
 apirouter.post("/insert-financial-health", (req, res) => {
   console.log(req.body);
   const {
@@ -178,7 +235,12 @@ apirouter.post("/insert-financial-health", (req, res) => {
   } = req.body;
   const level = moneyLevel.split(".")[1];
   db.query(
-    "INSERT INTO GradeLevel (UserID, GradeID,Grade_level,Grade_SavingRatio,Grade_DebtRatio,Grade_EmergencyRatio,Grade_Networth,Grade_level_name,Grade_description,Grade_Record) VALUES(?,?,?,?,?,?,?,?,?, NOW() ) ON DUPLICATE KEY UPDATE    Grade_level = ?,Grade_SavingRatio = ?,Grade_DebtRatio = ?,Grade_EmergencyRatio = ?,Grade_Networth = ?,Grade_level_name = ?,Grade_description = ?,Grade_Record = NOW();",
+    `INSERT INTO GradeLevel (UserID, GradeID,Grade_level,Grade_SavingRatio,Grade_DebtRatio,Grade_EmergencyRatio,Grade_Networth,Grade_level_name,Grade_description,Grade_Record) VALUES(?,?,?,?,?,?,?,?,?, NOW() ) ON DUPLICATE KEY UPDATE    Grade_level = ?,Grade_SavingRatio = ?,Grade_DebtRatio = ?,Grade_EmergencyRatio = ?,Grade_Networth = ?,Grade_level_name = ?,Grade_description = ?,Grade_Record = NOW();
+    
+    INSERT INTO Assessments(UserID, Assessment_Date, Lv_Status)
+    VALUE(?,NOW(),?);
+    
+    `,
     [
       userid,
       userid,
@@ -196,11 +258,16 @@ apirouter.post("/insert-financial-health", (req, res) => {
       netWorth,
       "",
       "",
+      userid,
+      level,
     ],
     (err, result) => {
-      if (err) throw err;
-
-      if (result.affectedRows > 0) {
+      if (err) {
+        res.status(500).json({ error: err });
+        throw err;
+      }
+      console.log(result);
+      if (result[0].affectedRows > 0) {
         res.json({ status: "success" });
       } else {
         res.json({ status: "failed" });
@@ -208,11 +275,16 @@ apirouter.post("/insert-financial-health", (req, res) => {
     }
   );
 });
-
+/**
+get jars by user id 
+*/
 apirouter.get("/get-jars/:id", (req, res) => {
   const userid = req.params.id;
   db.query("SELECT * FROM NineJars WHERE JarID=?", [userid], (err, result) => {
-    if (err) throw err;
+    if (err) {
+      res.status(500).json({ error: err });
+      throw err;
+    }
     if (result.length > 0) {
       res.json(result[0]);
     } else {
@@ -220,7 +292,9 @@ apirouter.get("/get-jars/:id", (req, res) => {
     }
   });
 });
-
+/**
+update jars by userid.
+*/
 apirouter.put("/update-jars/:id", (req, res) => {
   const id = req.params.id;
   const jar = req.body.jar;
@@ -240,12 +314,29 @@ apirouter.put("/update-jars/:id", (req, res) => {
       id,
     ],
     (err, result) => {
-      if (err) throw err;
+      if (err) {
+        res.status(500).json({ error: err });
+        throw err;
+      }
 
       if (result.affectedRows > 0) {
         res.json({ status: "success" });
       } else {
         res.json({ status: "failed" });
+      }
+    }
+  );
+});
+
+apirouter.get("/get-assessments", (req, res) => {
+  db.query(
+    "SELECT u.User_Name, r.Assessment_Date, r.Lv_Status FROM Userinfo as u JOIN Assessments as r ON r.UserID=u.UserID ORDER BY r.Assessment_Date DESC;",
+    (err, result) => {
+      if (err) throw err;
+      if (result.length > 0) {
+        res.json(result);
+      } else {
+        res.json({ message: "No data found." });
       }
     }
   );
