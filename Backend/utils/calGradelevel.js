@@ -21,7 +21,8 @@ export const calculate = (
     savingRatio <= 9 &&
     debtRatio >= 40 &&
     emergencyFundRatio <= 0 &&
-    netWorth <= 0
+    netWorth <= 0 &&
+    liabilities > savings
   ) {
     moneyLevel = "LV.1";
   } else if (
@@ -75,12 +76,7 @@ export const calculate = (
     netWorth > 0
   ) {
     moneyLevel = "LV.8";
-  } else if (
-    savingRatio >= 20 &&
-    debtRatio < 40 &&
-    emergencyFundRatio > 12 &&
-    netWorth > 0 
-  )
+  } 
   
 
   return { moneyLevel, savingRatio, debtRatio, emergencyFundRatio, netWorth };
